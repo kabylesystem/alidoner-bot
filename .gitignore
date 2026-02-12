@@ -1,0 +1,25 @@
+# Secrets — JAMAIS commit ces fichiers
+.env
+.last_run
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# Output
+output/
+
+# IDE
+.vscode/
+.idea/
+.cursor/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

@@ -1,0 +1,9 @@
+feedparser
+requests
+beautifulsoup4
+python-dateutil
+pyyaml
+html2text
+python-telegram-bot
+python-dotenv
+schedule
