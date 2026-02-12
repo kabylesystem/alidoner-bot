@@ -172,4 +172,4 @@ Idée concrète à implémenter basée sur l'actu du jour...
 
 ## Licence
 
-MIT — Fais-en ce que tu veux.
+Usage personnel gratuit. Usage commercial (service payant, SaaS, revente) uniquement avec autorisation préalable. Voir [LICENSE](LICENSE).
