@@ -1,6 +1,7 @@
 # AliDonerBot 🥙
 
-Bot Telegram qui envoie chaque matin un digest IA ultra-court, actionnable et pédagogique. 10-12 news max, priorisées P0/P1/P2, 100% en français, lisible en 90 secondes les yeux mi-clos.
+Bot Telegram qui envoie chaque matin un digest IA ultra-court, actionnable et pédagogique. 10-12 news max, priorisées P0/P1/P2, 100% en français, lisible en 90 secondes les yeux mi-clos. 
+Lien : https://t.me/Alidoner75015Bot
 
 ## Ce que ça fait
 
