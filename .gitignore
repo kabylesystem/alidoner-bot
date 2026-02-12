@@ -1,6 +1,7 @@
 # Secrets — JAMAIS commit ces fichiers
 .env
 .last_run
+subscribers.json
 
 # Python
 __pycache__/

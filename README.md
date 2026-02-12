@@ -65,26 +65,46 @@ python bot.py --days 7 --output veille.txt
 
 # Depuis le dernier run
 python bot.py --send --since-last-run
+
+# Lancer le listener (écoute /start, /stop, /status)
+python subscribers.py
 ```
 
+### Système d'abonnés
+
+N'importe qui peut s'abonner au bot :
+1. Ouvrir `t.me/TON_BOT` sur Telegram
+2. Taper `/start`
+3. C'est tout — le digest arrive chaque matin
+
+Commandes disponibles :
+- `/start` — S'abonner
+- `/stop` — Se désabonner
+- `/status` — Vérifier son abonnement
+
 ## Automatiser (systemd)
+
+Deux services : le **listener** (écoute /start en permanence) et le **timer** (envoie le digest chaque matin).
 
 ```bash
 # Copier les fichiers service/timer
 cp alidoner.service ~/.config/systemd/user/
 cp alidoner.timer ~/.config/systemd/user/
+cp alidoner-listener.service ~/.config/systemd/user/
 
-# Activer
+# Activer tout
 systemctl --user daemon-reload
 systemctl --user enable --now alidoner.timer
+systemctl --user enable --now alidoner-listener.service
 loginctl enable-linger $USER
 
 # Vérifier
 systemctl --user status alidoner.timer
-journalctl --user -u alidoner.service --since today
+systemctl --user status alidoner-listener.service
 ```
 
-Le bot s'exécute chaque jour à 9h00 CET.
+- **alidoner.timer** : envoie le digest chaque jour à 9h00 CET
+- **alidoner-listener** : tourne 24/7, capte les /start /stop /status
 
 ## Structure
 
@@ -92,9 +112,10 @@ Le bot s'exécute chaque jour à 9h00 CET.
 ├── bot.py                  # Orchestrateur principal
 ├── config.py               # Sources, mots-clés, paramètres
 ├── analyzer.py             # Priorisation P0-P3, scoring, dédup
-├── ollama_summarizer.py    # Enrichissement LLM (Cerebras/Ollama)
+├── ollama_summarizer.py    # Enrichissement LLM (DeepSeek-V3.2 / Ollama Cloud)
 ├── telegram_formatter.py   # Mise en page Telegram
 ├── telegram_sender.py      # Envoi via Telegram Bot API
+├── subscribers.py          # Gestion abonnés (/start, /stop, /status)
 ├── setup_telegram.py       # Assistant config Telegram
 ├── sources/
 │   ├── rss_fetcher.py      # 25+ flux RSS
@@ -103,7 +124,7 @@ Le bot s'exécute chaque jour à 9h00 CET.
 │   ├── github_trending.py  # GitHub trending (scraping)
 │   └── twitter_fetcher.py  # X/Twitter (Nitter/RSSHub)
 ├── .env.example            # Template de config
-├── .gitignore              # Exclut .env et output/
+├── .gitignore              # Exclut .env, subscribers.json, output/
 └── requirements.txt
 ```
 

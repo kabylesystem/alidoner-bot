@@ -22,6 +22,7 @@ from sources.twitter_fetcher import TwitterFetcher
 from analyzer import NewsAnalyzer, AnalyzedItem
 from telegram_formatter import TelegramFormatter
 from telegram_sender import TelegramSender, get_sender_from_env
+from subscribers import get_all_subscribers, add_subscriber
 from ollama_summarizer import OllamaSummarizer
 
 
@@ -238,11 +239,18 @@ class AliDonerBot:
 
             sender = get_sender_from_env()
             if sender:
-                success = sender.send(telegram_message)
-                if success:
-                    print("   ✅ Message envoyé sur Telegram !")
+                # S'assurer que le owner est abonné
+                owner_id = os.getenv("TELEGRAM_CHAT_ID", "").strip()
+                if owner_id:
+                    add_subscriber(owner_id)
+
+                subs = get_all_subscribers()
+                if subs:
+                    ok = sender.send_to_all(telegram_message, subs)
+                    print(f"   ✅ Message envoyé à {ok}/{len(subs)} abonné(s) !")
                 else:
-                    print("   ❌ Échec de l'envoi. Le message a été sauvegardé.")
+                    print("   ⚠️  Aucun abonné. Envoi au owner uniquement.")
+                    sender.send(telegram_message)
             else:
                 print("   ⚠️  Pas de config Telegram — fichier uniquement")
                 print("   💡 Lance: python setup_telegram.py")

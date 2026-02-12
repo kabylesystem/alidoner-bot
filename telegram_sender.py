@@ -1,11 +1,12 @@
 """
 AliDonerBot — Envoi de messages sur Telegram via Bot API HTTP
 Utilise requests (synchrone, simple, pas de problème d'event loop)
+Supporte l'envoi à tous les abonnés via subscribers.json
 """
 import os
 import time
 import requests
-from typing import Optional, List
+from typing import Optional, List, Set
 
 # Limite Telegram pour un message
 MAX_MESSAGE_LENGTH = 4096
@@ -13,24 +14,28 @@ TELEGRAM_API = "https://api.telegram.org"
 
 
 class TelegramSender:
-    def __init__(self, token: str, chat_id: str):
+    def __init__(self, token: str, chat_id: str = ""):
         """
         Args:
             token: Token du bot BotFather
-            chat_id: Chat ID du destinataire (user ou group)
+            chat_id: Chat ID du destinataire (legacy, optionnel)
         """
         self.token = token
         self.chat_id = chat_id
         self.api_url = f"{TELEGRAM_API}/bot{token}"
 
-    def send(self, message: str) -> bool:
+    def send(self, message: str, chat_id: str = None) -> bool:
         """
-        Envoie un message Telegram (synchrone).
-        Découpe automatiquement si le message dépasse 4096 chars.
+        Envoie un message Telegram à un destinataire.
 
         Returns:
             True si envoyé avec succès, False sinon
         """
+        target = chat_id or self.chat_id
+        if not target:
+            print("    ❌ Pas de chat_id spécifié")
+            return False
+
         try:
             chunks = self._split_message(message)
 
@@ -41,7 +46,7 @@ class TelegramSender:
                 resp = requests.post(
                     f"{self.api_url}/sendMessage",
                     json={
-                        "chat_id": self.chat_id,
+                        "chat_id": target,
                         "text": chunk,
                         "disable_web_page_preview": True,
                     },
@@ -50,7 +55,7 @@ class TelegramSender:
 
                 if not resp.ok:
                     error = resp.json().get("description", resp.text)
-                    print(f"    ❌ Erreur Telegram API: {error}")
+                    print(f"    ❌ Erreur Telegram ({target}): {error}")
                     return False
 
             return True
@@ -58,6 +63,27 @@ class TelegramSender:
         except Exception as e:
             print(f"    ❌ Erreur envoi Telegram: {e}")
             return False
+
+    def send_to_all(self, message: str, subscriber_ids: Set[str]) -> int:
+        """
+        Envoie le message à tous les abonnés.
+        Retourne le nombre d'envois réussis.
+        """
+        if not subscriber_ids:
+            print("    ⚠️  Aucun abonné")
+            return 0
+
+        success = 0
+        failed = 0
+        for cid in subscriber_ids:
+            ok = self.send(message, chat_id=cid)
+            if ok:
+                success += 1
+            else:
+                failed += 1
+            time.sleep(0.3)  # Rate limiting Telegram
+
+        return success
 
     def test_connection(self) -> bool:
         """Teste la connexion au bot (synchrone)"""
