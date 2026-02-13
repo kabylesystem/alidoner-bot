@@ -1,7 +1,8 @@
-# Secrets — JAMAIS commit ces fichiers
+# Secrets et données — JAMAIS commit ces fichiers
 .env
 .last_run
 subscribers.json
+.news_history.json
 
 # Python
 __pycache__/

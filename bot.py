@@ -23,6 +23,7 @@ from analyzer import NewsAnalyzer, AnalyzedItem
 from telegram_formatter import TelegramFormatter
 from telegram_sender import TelegramSender, get_sender_from_env
 from subscribers import get_all_subscribers, add_subscriber
+from history import filter_already_sent, mark_as_sent
 from ollama_summarizer import OllamaSummarizer
 
 
@@ -127,10 +128,14 @@ class AliDonerBot:
 
         print()
         print(f"📊 Total collecté : {len(all_items)} items")
+
+        # Filtrer les news déjà envoyées les jours précédents
+        all_items = filter_already_sent(all_items)
+        print(f"📊 Après filtre duplicatas : {len(all_items)} items nouveaux")
         print()
 
         if not all_items:
-            msg = "⚠️  Aucun item collecté. Vérifie ta connexion internet."
+            msg = "⚠️  Aucun item collecté (ou tout déjà envoyé). Vérifie ta connexion internet."
             print(msg)
             if send_telegram:
                 sender = get_sender_from_env()
@@ -248,6 +253,10 @@ class AliDonerBot:
                 if subs:
                     ok = sender.send_to_all(telegram_message, subs)
                     print(f"   ✅ Message envoyé à {ok}/{len(subs)} abonné(s) !")
+                    # Marquer les news comme envoyées pour éviter les duplicatas demain
+                    sent_items = [item.original for item in deduplicated[:config.MAX_TOP_ITEMS + 5]]
+                    mark_as_sent(sent_items)
+                    print(f"   📝 {len(sent_items)} news marquées dans l'historique")
                 else:
                     print("   ⚠️  Aucun abonné. Envoi au owner uniquement.")
                     sender.send(telegram_message)
