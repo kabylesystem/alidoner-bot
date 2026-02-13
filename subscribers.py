@@ -1,6 +1,6 @@
 """
 AliDonerBot — Gestion des abonnés Telegram
-Quand quelqu'un fait /start → il est enregistré et reçoit le digest chaque matin.
+Quand quelqu'un fait /start → il est enregistré et reçoit le recap chaque matin.
 Quand quelqu'un fait /stop → il est désinscrit.
 Les abonnés sont stockés dans subscribers.json (persistant).
 """
@@ -16,7 +16,7 @@ TELEGRAM_API = "https://api.telegram.org"
 
 WELCOME_MSG = """🥙 Bienvenue sur AliDonerBot !
 
-Chaque matin à 9h, tu reçois un digest IA :
+Chaque matin à 9h, tu reçois un recap IA :
 - Les 10 news les plus importantes des dernières 24h
 - Résumés complets en français (pas besoin de cliquer)
 - "Pourquoi ça compte" pour chaque news
@@ -24,7 +24,7 @@ Chaque matin à 9h, tu reçois un digest IA :
 - Une idée concrète à implémenter
 
 Commandes :
-/start — S'abonner au digest
+/start — S'abonner au recap
 /stop — Se désabonner
 /status — Vérifier son abonnement
 
@@ -33,11 +33,11 @@ Code : github.com/kabylesystem/alidoner-bot"""
 
 GOODBYE_MSG = """👋 Tu es désabonné d'AliDonerBot.
 
-Tu ne recevras plus le digest quotidien.
+Tu ne recevras plus le recap quotidien.
 Fais /start à tout moment pour te réabonner."""
 
-ALREADY_SUB_MSG = "✅ Tu es déjà abonné ! Tu recevras le prochain digest demain matin à 9h."
-STATUS_SUB_MSG = "✅ Tu es abonné. Prochain digest demain matin à 9h."
+ALREADY_SUB_MSG = "✅ Tu es déjà abonné ! Tu recevras le prochain recap demain matin à 9h."
+STATUS_SUB_MSG = "✅ Tu es abonné. Prochain recap demain matin à 9h."
 STATUS_NOT_SUB_MSG = "❌ Tu n'es pas abonné. Fais /start pour t'inscrire."
 
 

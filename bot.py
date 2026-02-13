@@ -308,7 +308,7 @@ def main():
     )
     parser.add_argument(
         "--send", "-S", action="store_true",
-        help="Envoyer le digest sur Telegram"
+        help="Envoyer le recap sur Telegram"
     )
     parser.add_argument(
         "--since-last-run", "-L", action="store_true",

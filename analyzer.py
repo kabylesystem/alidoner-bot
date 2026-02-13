@@ -198,8 +198,15 @@ class NewsAnalyzer:
                     continue
                 overlap = len(terms & existing)
                 smaller = min(len(terms), len(existing))
-                # Seuil à 50% : si la moitié des termes sont communs → doublon
-                if smaller > 0 and overlap / smaller >= 0.5:
+                # Seuil à 40% : si 40% des termes sont communs → doublon
+                if smaller > 0 and overlap / smaller >= 0.4:
+                    is_dup = True
+                    break
+                # Seuil spécial : 2+ termes significatifs identiques (noms, montants, produits)
+                sig = {t for t in terms if any(c.isdigit() for c in t) or len(t) >= 5}
+                sig_existing = {t for t in existing if any(c.isdigit() for c in t) or len(t) >= 5}
+                sig_overlap = len(sig & sig_existing)
+                if sig_overlap >= 2:
                     is_dup = True
                     break
 

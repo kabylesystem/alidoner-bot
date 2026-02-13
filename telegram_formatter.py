@@ -1,5 +1,5 @@
 """
-AliDonerBot — Formatage du digest Telegram
+AliDonerBot — Formatage du recap Telegram
 Objectif : message AUTONOME lisible en 90 secondes le matin,
 cerveau fatigué, pas besoin de cliquer un seul lien.
 100% français, zéro bruit, beau sur mobile Telegram.

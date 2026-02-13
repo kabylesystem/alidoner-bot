@@ -1,4 +1,4 @@
-name: AliDonerBot — Digest quotidien
+name: AliDonerBot — Recap quotidien
 
 on:
   schedule:
@@ -8,7 +8,7 @@ on:
     # Permet de lancer manuellement depuis l'onglet Actions de GitHub
 
 jobs:
-  send-digest:
+  send-recap:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
