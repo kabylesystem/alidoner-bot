@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AliDonerBot — Ton recap IA du matin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #0f0f12;
+      color: #e4e4e7;
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+      line-height: 1.6;
+    }
+    .wrap { max-width: 520px; margin: 0 auto; }
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .tagline { color: #a1a1aa; font-size: 1rem; margin-bottom: 2rem; }
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #22c55e;
+      color: #0f0f12;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.875rem 1.5rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      margin-bottom: 2.5rem;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.35);
+    }
+    .cta svg { width: 20px; height: 20px; }
+    section {
+      margin-bottom: 2rem;
+      padding: 1.25rem;
+      background: #18181b;
+      border-radius: 12px;
+      border: 1px solid #27272a;
+    }
+    section h2 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #a1a1aa;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+    .cmd {
+      font-family: ui-monospace, monospace;
+      background: #27272a;
+      padding: 0.35rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+    ul { list-style: none; }
+    li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #27272a;
+    }
+    li:last-child { border-bottom: none; }
+    .features li { padding: 0.4rem 0; }
+    .features .cmd { font-size: 0.8rem; }
+    footer {
+      margin-top: 2.5rem;
+      text-align: center;
+      color: #71717a;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>🥙 AliDonerBot</h1>
+    <p class="tagline">Ton recap IA du matin. 10 news, 90 secondes, zéro bruit.</p>
+
+    <a href="https://t.me/Alidoner75015Bot" class="cta" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161c-.18 1.897-.962 6.502-1.359 8.627-.168.9-.5 1.201-.82 1.23-.697.064-1.226-.461-1.901-.903-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.139-5.062 3.345-.479.329-.913.489-1.302.481-.428-.009-1.252-.242-1.865-.44-.752-.244-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.831-2.529 6.998-3.015 3.333-1.386 4.025-1.627 4.477-1.635.099-.002.321.023.465.141.121.1.154.234.17.33.015.096.034.313.02.484z"/></svg>
+      Ouvrir sur Telegram
+    </a>
+
+    <section>
+      <h2>Commandes</h2>
+      <ul>
+        <li><span class="cmd">/start</span> — S'abonner au recap</li>
+        <li><span class="cmd">/stop</span> — Se désabonner</li>
+        <li><span class="cmd">/status</span> — Vérifier son abonnement</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>À venir</h2>
+      <ul class="features">
+        <li><span class="cmd">/last</span> — Renvoyer le dernier recap</li>
+        <li><span class="cmd">/heure 7:30</span> — Choisir l'heure d'envoi</li>
+        <li><span class="cmd">/focus coding</span> — Filtrer par thème</li>
+        <li>Résumé hebdo le dimanche</li>
+        <li>Alertes en cas de news majeure</li>
+      </ul>
+    </section>
+
+    <footer>Gratuit pour l'instant. Sans pub.</footer>
+  </div>
+</body>
+</html>
