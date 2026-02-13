@@ -1,0 +1,92 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #0f0f0f;
+  color: #e4e4e4;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+main {
+  max-width: 420px;
+  padding: 2rem;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.tagline {
+  color: #a1a1a1;
+  margin: 0 0 2rem;
+  font-size: 1rem;
+}
+
+.cta {
+  display: inline-block;
+  background: #0088cc;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 2.5rem;
+  transition: background 0.2s;
+}
+
+.cta:hover {
+  background: #0099dd;
+}
+
+section {
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #737373;
+  margin: 0 0 0.75rem;
+}
+
+.commands,
+.soon {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.commands li,
+.soon li {
+  padding: 0.35rem 0;
+  font-size: 0.95rem;
+}
+
+code {
+  background: #262626;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.soon li {
+  color: #737373;
+}
+
+.footer {
+  margin-top: 2rem;
+  font-size: 0.85rem;
+  color: #525252;
+}
