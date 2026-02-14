@@ -4,6 +4,7 @@
 subscribers.json
 .news_history.json
 .alerts_history.json
+.listener_offset
 
 # Python
 __pycache__/

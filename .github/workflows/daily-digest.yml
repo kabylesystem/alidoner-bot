@@ -70,3 +70,13 @@ jobs:
           if [ -f subscribers.json ]; then
             gh secret set SUBSCRIBERS_JSON --body "$(cat subscribers.json)" --repo ${{ github.repository }} || true
           fi
+
+      - name: Save last recap for /last command
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          LATEST=$(ls -t output/telegram_*.txt 2>/dev/null | head -1)
+          if [ -n "$LATEST" ] && [ -f "$LATEST" ]; then
+            gh secret set LAST_RECAP --body "$(cat "$LATEST")" --repo ${{ github.repository }} || true
+          fi

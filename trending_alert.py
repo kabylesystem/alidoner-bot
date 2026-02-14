@@ -81,11 +81,32 @@ def main():
     analyzer = NewsAnalyzer(config)
     analyzed = analyzer.analyze(items)
 
-    # Only P0 with high score
-    p0_items = [i for i in analyzed if i.priority == "P0" and i.score >= 8]
+    # Only TRUE breaking news — P0 with very high score
+    # Score >= 12 = real breaking (major launch, huge funding, critical incident)
+    # Must also have engagement (HN score > 200, or from a top lab RSS)
+    p0_items = []
+    for i in analyzed:
+        if i.priority != "P0" or i.score < 12:
+            continue
+        # Extra check: must match "breaking" keywords in title
+        title_lower = (i.original.get("title", "") or "").lower()
+        breaking_signals = [
+            "launch", "released", "announces", "acquired", "acquisition",
+            "funding", "raises", "breach", "vulnerability", "shutdown",
+            "open source", "gpt-5", "gpt5", "claude 4", "gemini 2",
+            "llama 4", "o3", "o4",
+            "billion", "milliard",
+        ]
+        has_signal = any(kw in title_lower for kw in breaking_signals)
+        # High HN score also qualifies
+        hn_score = i.original.get("score", 0)
+        if isinstance(hn_score, (int, float)) and hn_score >= 300:
+            has_signal = True
+        if has_signal:
+            p0_items.append(i)
 
     if not p0_items:
-        print("   Pas de news P0 majeure. Rien à alerter.")
+        print("   Pas de BREAKING news. Seuil élevé non atteint. Rien à alerter.")
         return
 
     # Check history

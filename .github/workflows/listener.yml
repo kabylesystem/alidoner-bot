@@ -1,0 +1,62 @@
+name: AliDonerBot — Listener commandes
+
+on:
+  schedule:
+    # Toutes les 15 minutes (économise les minutes GitHub Actions)
+    # Free tier = 2000 min/mois — ceci consomme ~1500 min/mois
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  process-commands:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Download state
+        env:
+          SUBSCRIBERS_JSON: ${{ secrets.SUBSCRIBERS_JSON }}
+          LISTENER_OFFSET: ${{ secrets.LISTENER_OFFSET }}
+          LAST_RECAP: ${{ secrets.LAST_RECAP }}
+        run: |
+          if [ -n "$SUBSCRIBERS_JSON" ]; then
+            echo "$SUBSCRIBERS_JSON" > subscribers.json
+          else
+            echo '{"subscribers":{}}' > subscribers.json
+          fi
+          if [ -n "$LAST_RECAP" ]; then
+            mkdir -p output
+            echo "$LAST_RECAP" > output/last_recap.txt
+          fi
+
+      - name: Process pending commands
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          LISTENER_OFFSET: ${{ secrets.LISTENER_OFFSET }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python process_commands.py
+
+      - name: Save state
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -f subscribers.json ]; then
+            gh secret set SUBSCRIBERS_JSON --body "$(cat subscribers.json)" --repo ${{ github.repository }} || true
+          fi
+          if [ -f .listener_offset ]; then
+            gh secret set LISTENER_OFFSET --body "$(cat .listener_offset)" --repo ${{ github.repository }} || true
+          fi
