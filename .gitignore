@@ -3,6 +3,7 @@
 .last_run
 subscribers.json
 .news_history.json
+.alerts_history.json
 
 # Python
 __pycache__/

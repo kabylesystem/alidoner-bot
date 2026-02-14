@@ -1,0 +1,52 @@
+name: AliDonerBot — Recap hebdo (dimanche)
+
+on:
+  schedule:
+    # Dimanche à 10h00 CET (9h00 UTC)
+    - cron: '0 9 * * 0'
+  workflow_dispatch:
+
+jobs:
+  send-weekly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Download subscribers
+        env:
+          SUBSCRIBERS_JSON: ${{ secrets.SUBSCRIBERS_JSON }}
+        run: |
+          if [ -n "$SUBSCRIBERS_JSON" ]; then
+            echo "$SUBSCRIBERS_JSON" > subscribers.json
+          else
+            echo '{"subscribers":{}}' > subscribers.json
+          fi
+
+      - name: Download news history
+        env:
+          NEWS_HISTORY_JSON: ${{ secrets.NEWS_HISTORY_JSON }}
+        run: |
+          if [ -n "$NEWS_HISTORY_JSON" ]; then
+            echo "$NEWS_HISTORY_JSON" > .news_history.json
+          else
+            echo '{"sent":{}}' > .news_history.json
+          fi
+
+      - name: Run weekly recap
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          OLLAMA_API_KEY: ${{ secrets.OLLAMA_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+        run: python bot.py --weekly --send

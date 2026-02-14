@@ -1,0 +1,61 @@
+name: AliDonerBot — Alertes trending
+
+on:
+  schedule:
+    # Toutes les 4h entre 10h et 22h CET (UTC+1)
+    - cron: '0 9,13,17,21 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-trending:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Download subscribers
+        env:
+          SUBSCRIBERS_JSON: ${{ secrets.SUBSCRIBERS_JSON }}
+        run: |
+          if [ -n "$SUBSCRIBERS_JSON" ]; then
+            echo "$SUBSCRIBERS_JSON" > subscribers.json
+          else
+            echo '{"subscribers":{}}' > subscribers.json
+          fi
+
+      - name: Download alerts history
+        env:
+          ALERTS_HISTORY: ${{ secrets.ALERTS_HISTORY }}
+        run: |
+          if [ -n "$ALERTS_HISTORY" ]; then
+            echo "$ALERTS_HISTORY" > .alerts_history.json
+          else
+            echo '{"sent":{}}' > .alerts_history.json
+          fi
+
+      - name: Check for trending news
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          OLLAMA_API_KEY: ${{ secrets.OLLAMA_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
+        run: python trending_alert.py
+
+      - name: Save alerts history
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -f .alerts_history.json ]; then
+            gh secret set ALERTS_HISTORY --body "$(cat .alerts_history.json)" --repo ${{ github.repository }} || true
+          fi

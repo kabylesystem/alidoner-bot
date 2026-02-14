@@ -53,6 +53,7 @@ class AliDonerBot:
         output_file: str = None,
         send_telegram: bool = False,
         since_last_run: bool = False,
+        weekly_mode: bool = False,
     ) -> str:
         """
         Pipeline complet : collect → analyze → enrich (IA) → format → save → send
@@ -83,9 +84,14 @@ class AliDonerBot:
             days_back = days_back or config.DAYS_BACK
             window_str = f"dernières {days_back * 24}h"
 
+        if weekly_mode:
+            days_back = 7
+            window_str = "résumé de la semaine"
+
         print()
         print("=" * 60)
-        print(f"🥙 {config.BOT_NAME} — {datetime.now().strftime('%Y-%m-%d %H:%M')}")
+        mode_label = "HEBDO" if weekly_mode else ""
+        print(f"🥙 {config.BOT_NAME} {mode_label} — {datetime.now().strftime('%Y-%m-%d %H:%M')}")
         print("=" * 60)
         print()
 
@@ -175,10 +181,11 @@ class AliDonerBot:
             print("✨ PHASE 3 : ENRICHISSEMENT IA")
             print("-" * 40)
 
-            # Enrichir exactement les items qui seront affichés (P0 + P1, max 10)
+            # Enrichir exactement les items qui seront affichés
+            max_items = 5 if weekly_mode else config.MAX_TOP_ITEMS
             p0 = [i for i in deduplicated if i.priority == 'P0']
             p1 = [i for i in deduplicated if i.priority == 'P1']
-            top_analyzed = (p0 + p1)[:config.MAX_TOP_ITEMS]
+            top_analyzed = (p0 + p1)[:max_items]
 
             items_to_enrich = [item.original for item in top_analyzed]
 
@@ -326,6 +333,10 @@ def main():
         "--setup", action="store_true",
         help="Lancer la configuration Telegram interactive"
     )
+    parser.add_argument(
+        "--weekly", action="store_true",
+        help="Envoyer le résumé hebdo (7 derniers jours, top 5)"
+    )
 
     args = parser.parse_args()
 
@@ -337,6 +348,23 @@ def main():
     # Mode planifié
     if args.schedule:
         _run_scheduled(args)
+        return
+
+    # Mode hebdo (dimanche)
+    if args.weekly:
+        bot = AliDonerBot()
+        try:
+            message = bot.run(
+                days_back=7,
+                output_file=args.output,
+                send_telegram=args.send,
+                weekly_mode=True,
+            )
+        except Exception as e:
+            print(f"\n\n❌ Erreur: {e}")
+            import traceback
+            traceback.print_exc()
+            sys.exit(1)
         return
 
     # Mode normal
